@@ -1,25 +1,100 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from 'react'
+// import FacebookLogin from 'react-facebook-login';
+import { FacebookProvider, LoginButton } from 'react-facebook';
+import {  Feed } from 'react-facebook';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+export class App extends Component {
+  
+
+  state ={
+    isLoggeIn:false,
+    userID:'',
+    name:'',
+    email:'',
+    picture:''
 }
 
-export default App;
+handleResponse = (data) => {
+  this.setState({
+        isLoggeIn:true,
+        userID:data.profile.id,
+        name:data.profile.name,
+        email:data.profile.email,
+        picture:data.profile.picture.data.url
+    })
+  console.log(data.profile.name);
+}
+
+handleError = (error) => {
+  this.setState({ error });
+}
+
+   
+
+  render() {
+   const Logout=()=>{
+      this.setState({
+        isLoggeIn:false,
+      userID:'',
+      name:'',
+      email:'',
+      picture:''
+      })
+    };
+    let fbContent;
+
+    if(this.state.isLoggeIn){
+        fbContent= (
+          <div style={
+            {
+              width:'400px',
+              margin:'auto',
+              background:'#f4f4f4',
+              padding:'20px'
+            }
+          }>
+            <div>
+              <button onClick={Logout} style={{padding:'10px',background:'#0450b4',color:'white'}}>Log Out</button>
+            </div>
+            <br />
+            <img src={this.state.picture} alt="sadsd" />
+            <h2>Welcome {this.state.name}</h2>
+            <p>Email : {this.state.email}</p>
+          <br />
+          <div>
+          <FacebookProvider appId={process.env.APP_ID}>
+        <Feed link="https://www.facebook.com">
+          {({ handleClick }) => (
+            <button type="button" style={{padding:'10px',background:'#0450b4',color:'white'}} onClick={handleClick}>Post Directly to Facebook</button>
+          )}
+        </Feed>
+      </FacebookProvider> 
+          </div>
+          </div>
+          
+
+        )
+    }
+    else{
+        fbContent=(<FacebookProvider appId={process.env.APP_ID}>
+        <LoginButton
+          scope="email"
+          onCompleted={this.handleResponse}
+          onError={this.handleError}
+        >
+          <span>Login via Facebook</span>
+        </LoginButton>
+      </FacebookProvider>);
+    }
+
+    return (
+      <div className='App'>
+        {fbContent }
+      </div>
+    )
+  }
+}
+
+export default App
+

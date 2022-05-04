@@ -63,7 +63,7 @@ handleError = (error) => {
             <p>Email : {this.state.email}</p>
           <br />
           <div>
-          <FacebookProvider appId={process.env.APP_ID}>
+          <FacebookProvider appId="362264855960268">
         <Feed link="https://www.facebook.com">
           {({ handleClick }) => (
             <button type="button" style={{padding:'10px',background:'#0450b4',color:'white'}} onClick={handleClick}>Post Directly to Facebook</button>
@@ -77,7 +77,7 @@ handleError = (error) => {
         )
     }
     else{
-        fbContent=(<FacebookProvider appId={process.env.APP_ID}>
+        fbContent=(<FacebookProvider appId="362264855960268">
         <LoginButton
           scope="email"
           onCompleted={this.handleResponse}
